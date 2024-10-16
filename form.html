@@ -64,9 +64,6 @@
     <script>
         const foodForm = document.getElementById('foodForm');
 
-        // Array to store available foods
-        let foods = [];
-
         foodForm.addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -87,14 +84,19 @@
                 location
             };
 
+            // Retrieve existing foods from localStorage, or start with an empty array
+            let foods = JSON.parse(localStorage.getItem('foods')) || [];
+
             // Add the new food to the foods array
             foods.push(newFood);
 
-            // Redirect to purchase page with updated food data (in real case, we'd update the backend here)
+            // Save the updated foods array back to localStorage
             localStorage.setItem('foods', JSON.stringify(foods));
+
             alert("Food added successfully!");
             window.location.href = 'purchase.html';
         });
     </script>
 </body>
 </html>
+

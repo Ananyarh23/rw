@@ -31,12 +31,15 @@
     </section>
 
     <script>
+        // Retrieve existing foods from localStorage, or start with an empty array
         let foods = JSON.parse(localStorage.getItem('foods')) || [];
 
         const foodList = document.getElementById('foodList');
 
+        // Function to render the food list
         function renderFoodList() {
             foodList.innerHTML = '';
+
             foods.forEach((food, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -52,6 +55,7 @@
             });
         }
 
+        // Function to handle purchasing food
         function purchaseFood(index) {
             const quantityToPurchase = prompt(`Enter quantity of ${foods[index].foodDescription} to take (Available: ${foods[index].quantity})`);
 
@@ -61,22 +65,24 @@
                 if (quantity <= foods[index].quantity) {
                     foods[index].quantity -= quantity;
 
+                    // If the quantity reaches zero, remove the item
                     if (foods[index].quantity === 0) {
                         foods.splice(index, 1);  // Remove the food if the quantity reaches zero
                     }
 
-                    // Update the food list in localStorage and re-render
+                    // Update localStorage and re-render the list
                     localStorage.setItem('foods', JSON.stringify(foods));
                     renderFoodList();
                     alert(`You have successfully taken ${quantity} of ${foods[index].foodDescription}.`);
                 } else {
-                    alert("Sorry, you can't take more than available quantity.");
+                    alert("Sorry, you can't take more than the available quantity.");
                 }
             }
         }
 
-        // Initial render
+        // Initial render of the food list
         renderFoodList();
     </script>
 </body>
 </html>
+
