@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leftover Food Availability</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Available Leftover Food</h1>
+
+            <table class="table is-fullwidth" id="foodTable">
+                <thead>
+                    <tr>
+                        <th>Shopkeeper Name</th>
+                        <th>Phone Number</th>
+                        <th>Food Description</th>
+                        <th>Quantity</th>
+                        <th>Address</th>
+                        <th>Location</th>
+                        <th>Take Action</th>
+                    </tr>
+                </thead>
+                <tbody id="foodList">
+                    <!-- Food entries will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <script>
+        let foods = JSON.parse(localStorage.getItem('foods')) || [];
+
+        const foodList = document.getElementById('foodList');
+
+        function renderFoodList() {
+            foodList.innerHTML = '';
+            foods.forEach((food, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${food.shopkeeperName}</td>
+                    <td>${food.phoneNumber}</td>
+                    <td>${food.foodDescription}</td>
+                    <td>${food.quantity} left</td>
+                    <td>${food.address}</td>
+                    <td>${food.location}</td>
+                    <td><button class="button is-success" onclick="purchaseFood(${index})">Take Food</button></td>
+                `;
+                foodList.appendChild(row);
+            });
+        }
+
+        function purchaseFood(index) {
+            const quantityToPurchase = prompt(`Enter quantity of ${foods[index].foodDescription} to take (Available: ${foods[index].quantity})`);
+
+            if (quantityToPurchase !== null && !isNaN(quantityToPurchase)) {
+                const quantity = parseInt(quantityToPurchase);
+
+                if (quantity <= foods[index].quantity) {
+                    foods[index].quantity -= quantity;
+
+                    if (foods[index].quantity === 0) {
+                        foods.splice(index, 1);  // Remove the food if the quantity reaches zero
+                    }
+
+                    // Update the food list in localStorage and re-render
+                    localStorage.setItem('foods', JSON.stringify(foods));
+                    renderFoodList();
+                    alert(`You have successfully taken ${quantity} of ${foods[index].foodDescription}.`);
+                } else {
+                    alert("Sorry, you can't take more than available quantity.");
+                }
+            }
+        }
+
+        // Initial render
+        renderFoodList();
+    </script>
+</body>
+</html>
